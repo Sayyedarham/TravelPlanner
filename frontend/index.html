@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Planner | Explore the World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background: #020617;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Background Animation */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .orb-1 {
+      top: -10%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: #4f46e5;
+    }
+
+    .orb-2 {
+      bottom: -10%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: #0ea5e9;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: 1000;
+    }
+
+    .brand {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #38bdf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .btn-login {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      transition: 0.3s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      background: url('https://source.unsplash.com/1920x1080/?travel,nature') center/cover no-repeat;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(2, 6, 23, 0.3), #020617);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    .search-bar {
+      display: flex;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 8px;
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      color: rgb(255, 255, 255);
+      font-size: 1rem;
+    }
+
+    .search-bar button {
+      background: var(--accent);
+      border: none;
+      padding: 10px 30px;
+      border-radius: 30px;
+      color: rgb(15, 23, 42);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Sections */
+    section {
+      padding: 80px 50px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    h2 span {
+      color: var(--accent);
+    }
+
+    /* Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: 0.4s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: 0.4s;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-info {
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      padding: 40px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--glass-border);
+      text-align: center;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #0f172a;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: white;
+    }
+
+    .modal button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #0f172a;
+      padding: 40px;
+      text-align: center;
+      border-top: 1px solid var(--glass-border);
+      margin-top: 50px;
+    }
+
+    @media(max-width: 768px) {
+      header {
+        padding: 20px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      /* Mobile menu simplified for now */
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+    }
+
+    /* Details Modal Styles */
+    .details-modal-content {
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    .details-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .details-header img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+    }
+
+    .details-section {
+      margin-bottom: 30px;
+    }
+
+    .details-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 10px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .detail-card {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+
+    .detail-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .detail-info {
+      padding: 15px;
+    }
+
+    .detail-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .detail-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <header>
+    <div class="brand">✈️ TravelPlanner</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#tours">Tours</a>
+      <a href="#about">About</a>
+      <a href="#expenses">Expenses</a>
+      <button class="btn-login" id="loginBtn" onclick="openModal()">Login</button>
+
+      <span id="userEmail" style="display:none; font-weight:600; color:var(--accent); margin-left:15px;"></span>
+
+      <button id="logoutBtn" onclick="logout()"
+        style="display:none; margin-left:15px; padding:8px 18px; border-radius:20px; background:#ef4444; color:white; border:none; cursor:pointer;">
+        Logout
+      </button>
+
+    </nav>
+  </header>
+
+  <div class="hero" id="home">
+    <div class="hero-content">
+      <h1>Discover Your Next <br> <span style="color:var(--accent)">Adventure</span></h1>
+      <p>Experience Exclusive Tours with Smart recommendations.</p>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Where do you want to go?"
+          onkeypress="handleSearchKeyPress(event)">
+        <button onclick="searchDestinations()">Explore</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="destinations">
+    <h2>Popular <span>Destinations</span></h2>
+    <div class="grid" id="countryGrid">
+      <!-- JS will populate this -->
+    </div>
+  </section>
+
+  <!-- Tours Section -->
+  <section id="tours">
+    <h2>Popular <span>Tours</span></h2>
+    <div class="grid">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500" alt="European Explorer">
+        <div class="card-info">
+          <div class="card-title">European Explorer</div>
+          <div class="card-desc">10 Days | Paris, Rome, Barcelona | From ₹2,07,000</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1528127269322-539801943592?w=500" alt="Asian Adventure">
+        <div class="card-info">
+          <div class="card-title">Asian Adventure</div>
+          <div class="card-desc">14 Days | Tokyo, Bangkok, Singapore | From ₹2,74,000</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500" alt="Safari Experience">
+        <div class="card-info">
+          <div class="card-title">Safari Experience</div>
+          <div class="card-desc">7 Days | Kenya & Tanzania | From ₹4,15,000</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500" alt="Nordic Wonders">
+        <div class="card-info">
+          <div class="card-title">Nordic Wonders</div>
+          <div class="card-desc">12 Days | Iceland, Norway, Sweden | From ₹3,15,000</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=500" alt="South American Journey">
+        <div class="card-info">
+          <div class="card-title">South American Journey</div>
+          <div class="card-desc">15 Days | Peru, Brazil, Argentina | From ₹2,99,000</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500" alt="Island Paradise">
+        <div class="card-info">
+          <div class="card-title">Island Paradise</div>
+          <div class="card-desc">8 Days | Maldives & Seychelles | From ₹4,56,000</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="expenses">
+    <h2>Trip <span>Expenses</span></h2>
+
+    <div style="
+    max-width:700px;
+    margin:0 auto;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    padding:30px;
+    border-radius:20px;
+    text-align:center;">
+
+      <p style="color:var(--text-muted); margin-bottom:20px;">
+        Plan and track your estimated travel expenses.
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:15px;">
+        <input type="number" id="flightCost" placeholder="Flight Cost"
+          style="padding:12px; border-radius:10px; background:#0f172a; border:1px solid var(--glass-border); color:white;">
+        <input type="number" id="hotelCost" placeholder="Hotel Cost (per night)"
+          style="padding:12px; border-radius:10px; background:#0f172a; border:1px solid var(--glass-border); color:white;">
+        <input type="number" id="foodCost" placeholder="Food Budget"
+          style="padding:12px; border-radius:10px; background:#0f172a; border:1px solid var(--glass-border); color:white;">
+        <input type="number" id="transportCost" placeholder="Transport Cost"
+          style="padding:12px; border-radius:10px; background:#0f172a; border:1px solid var(--glass-border); color:white;">
+        <button onclick="calculateExpenses()" style="
+        margin-top:10px;
+        padding:12px;
+        background:var(--accent);
+        border:none;
+        border-radius:8px;
+        font-weight:700;
+        cursor:pointer;
+        color:#0f172a;">
+          Calculate Total
+        </button>
+        <h3 id="totalOutput" style="display:none; margin-top:20px; text-align:center;"></h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About <span>TravelPlanner</span></h2>
+
+    <div style="max-width:900px; margin:0 auto; text-align:center;">
+      <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom:30px; line-height:1.8;">
+        Welcome to TravelPlanner, your ultimate companion for planning unforgettable journeys around the world.
+        Explore destinations, manage your travel budget, and organize your trips easily – all in one place.
+
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:30px; margin-top:50px;">
+        <div style="background:var(--glass); border:1px solid var(--glass-border); padding:30px; border-radius:20px;">
+          <div style="font-size:2.5rem; margin-bottom:15px;">🌍</div>
+          <h3 style="color:var(--accent); margin-bottom:10px;">Global Destinations</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">
+            Explore handpicked destinations from every corner of the world with detailed guides and recommendations.
+          </p>
+        </div>
+
+        <div style="background:var(--glass); border:1px solid var(--glass-border); padding:30px; border-radius:20px;">
+          <div style="font-size:2.5rem; margin-bottom:15px;">💰</div>
+          <h3 style="color:var(--accent); margin-bottom:10px;">Budget Planning</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">
+            Track and manage your travel expenses with our smart calculator to stay within your budget.
+          </p>
+        </div>
+
+        <div style="background:var(--glass); border:1px solid var(--glass-border); padding:30px; border-radius:20px;">
+          <div style="font-size:2.5rem; margin-bottom:15px;">✨</div>
+          <h3 style="color:var(--accent); margin-bottom:10px;">Personalized Experience</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">
+            Discover travel ideas that match your interests and travel style.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 style="font-size:1.8rem; margin-bottom:20px;">Welcome Back</h2>
+
+      <input id="loginEmail" type="email" placeholder="Email Address">
+      <input id="loginPassword" type="password" placeholder="Password">
+
+      <button onclick="login()">Sign In</button>
+
+      <p style="margin-top:15px; font-size:0.9rem; color:var(--text-muted);">
+        Don't have an account?
+        <a href="#" onclick="openSignup()">Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal" id="signupModal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeSignup()">&times;</span>
+      <h2 style="font-size:1.8rem; margin-bottom:20px;">Create Account</h2>
+
+      <input id="signupUsername" type="text" placeholder="Username">
+      <input id="signupEmail" type="email" placeholder="Email Address">
+      <input id="signupPassword" type="password" placeholder="Password">
+
+      <button onclick="signup()">Sign Up</button>
+
+      <p style="margin-top:15px; font-size:0.9rem; color:var(--text-muted);">
+        Already have an account?
+        <a href="#" onclick="openLogin()">Login</a>
+      </p>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <!-- Trip Details Modal -->
+  <div class="modal" id="tripDetailsModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeTripDetailsModal()">&times;</span>
+      <h2 style="font-size:1.8rem; margin-bottom:20px;">Plan Your Trip</h2>
+
+      <input id="tripPersons" type="number" placeholder="Number of Persons" min="1">
+      <input id="tripBudget" type="number" placeholder="Total Budget (₹)" min="0">
+      <input id="tripNights" type="number" placeholder="Number of Nights" min="1">
+
+      <div style="display:flex; gap:10px;">
+        <input id="tripStartDate" type="text" placeholder="Start Date" onfocus="(this.type='date')"
+          onblur="(this.type='text')">
+        <input id="tripEndDate" type="text" placeholder="End Date" onfocus="(this.type='date')"
+          onblur="(this.type='text')">
+      </div>
+
+      <button onclick="submitTripDetails()">Continue</button>
+    </div>
+  </div>
+
+
+  <footer>
+    <p>© 2025 Travel Planner. All rights reserved.</p>
+    <div style="margin-top:10px; color:var(--text-muted);">
+      <a href="#" style="color:inherit; margin:0 10px;">Privacy</a>
+      <a href="#" style="color:inherit; margin:0 10px;">Terms</a>
+      <a href="#" style="color:inherit; margin:0 10px;">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // Countries with image URLs
+    const countries = [
+      {
+        name: "Japan",
+        img: "img/countries/japan.jpg",
+        cities: [
+          { name: "Tokyo", desc: "Neon lights & historic temples", estCost: 5000 }, { name: "Kyoto", desc: "Traditional tea houses & gardens", estCost: 4500 }, { name: "Osaka", desc: "Street food capital", estCost: 4000 }
+        ],
+        food: [
+          { name: "Sushi", desc: "Fresh seafood delicacy", price: 2000 }, { name: "Ramen", desc: "Rich noodle soup", price: 800 }, { name: "Tempura", desc: "Crispy fried vegetables/seafood", price: 1500 }
+        ],
+        hotels: [
+          { name: "Aman Tokyo", rating: "5.0 ⭐", price: 80000 }, { name: "Hoshinoya Kyoto", rating: "4.9 ⭐", price: 60000 }, { name: "Ritz-Carlton Osaka", rating: "4.8 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "France",
+        img: "img/countries/france.jpg",
+        cities: [
+          { name: "Paris", desc: "City of lights & romance", estCost: 6000 }, { name: "Nice", desc: "French Riviera beaches", estCost: 5500 }, { name: "Lyon", desc: "Gastronomic capital", estCost: 5000 }
+        ],
+        food: [
+          { name: "Croissant", desc: "Buttery pastry", price: 300 }, { name: "Coq au Vin", desc: "Chicken braised with wine", price: 2500 }, { name: "Macarons", desc: "Sweet meringue confection", price: 1200 }
+        ],
+        hotels: [
+          { name: "The Ritz Paris", rating: "5.0 ⭐", price: 90000 }, { name: "Hotel Negresco", rating: "4.8 ⭐", price: 70000 }, { name: "InterContinental Lyon", rating: "4.7 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "India",
+        img: "img/countries/India.jpg",
+        cities: [
+          { name: "Mumbai", desc: "City of dreams & financial hub", estCost: 2000 }, { name: "Delhi", desc: "Historic monuments & culture", estCost: 1800 }, { name: "Bangalore", desc: "Tech capital & innovation center", estCost: 2500 }
+        ],
+        food: [
+          { name: "Vada Pav", desc: "Spiced potato fritter in a bun", price: 50 }, { name: "Chole Bhature", desc: "Spicy chickpeas (chole) with fluffy fried bread (bhature)", price: 200 }, { name: "Dosa", desc: "a popular South Indian, crepe-like pancake made from a fermented batter of rice and lentils", price: 150 }
+        ],
+        hotels: [
+          { name: "The Taj Mahal Palace", rating: "5.0 ⭐", price: 25000 }, { name: "The Oberoi", rating: "4.8 ⭐", price: 20000 }, { name: "Zostel banglore", rating: "4.7 ⭐", price: 2000 }
+        ]
+      },
+      {
+        name: "Italy",
+        img: "img/countries/italy.jpg",
+        cities: [
+          { name: "Rome", desc: "Ancient history & art", estCost: 5500 },
+          { name: "Venice", desc: "Canals & gondolas", estCost: 6000 },
+          { name: "Florence", desc: "Renaissance masterpiece", estCost: 5000 }
+        ],
+        food: [
+          { name: "Pizza", desc: "Authentic Neapolitan style", price: 1200 },
+          { name: "Pasta Carbonara", desc: "Creamy roman classic", price: 1500 },
+          { name: "Gelato", desc: "Italian ice cream", price: 400 }
+        ],
+        hotels: [
+          { name: "Hotel Hassler", rating: "4.9 ⭐", price: 75000 },
+          { name: "Gritti Palace", rating: "5.0 ⭐", price: 95000 },
+          { name: "Four Seasons Florence", rating: "4.9 ⭐", price: 85000 }
+        ]
+      },
+      {
+        name: "Greece",
+        img: "img/countries/greece.jpg",
+        cities: [
+          { name: "Athens", desc: "Ancient ruins & history", estCost: 4500 },
+          { name: "Santorini", desc: "White buildings & sunsets", estCost: 6000 },
+          { name: "Mykonos", desc: "Beaches & nightlife", estCost: 5500 }
+        ],
+        food: [
+          { name: "Moussaka", desc: "Eggplant casserole", price: 1000 },
+          { name: "Souvlaki", desc: "Grilled meat skewers", price: 600 },
+          { name: "Feta Cheese", desc: "Traditional Greek cheese", price: 300 }
+        ],
+        hotels: [
+          { name: "Cavo Tagoo", rating: "5.0 ⭐", price: 60000 },
+          { name: "Hotel Grande Bretagne", rating: "4.9 ⭐", price: 50000 },
+          { name: "Canaves Oia", rating: "5.0 ⭐", price: 70000 }
+        ]
+      },
+      {
+        name: "Australia",
+        img: "img/countries/australia.jpg",
+        cities: [
+          { name: "Sydney", desc: "Harbour Bridge & Opera House", estCost: 6500 },
+          { name: "Melbourne", desc: "Coffee culture & arts", estCost: 6000 },
+          { name: "Gold Coast", desc: "Surfing & theme parks", estCost: 5500 }
+        ],
+        food: [
+          { name: "Meat Pie", desc: "Classic Aussie snack", price: 400 },
+          { name: "Vegemite on Toast", desc: "Iconic spread", price: 200 },
+          { name: "Lamingtons", desc: "Sponge cake with coconut", price: 300 }
+        ],
+        hotels: [
+          { name: "Park Hyatt Sydney", rating: "4.9 ⭐", price: 85000 },
+          { name: "Crown Towers", rating: "4.8 ⭐", price: 65000 },
+          { name: "Palazzo Versace", rating: "4.7 ⭐", price: 70000 }
+        ]
+      },
+      {
+        name: "Iceland",
+        img: "img/countries/iceland.jpg",
+        cities: [
+          { name: "Reykjavik", desc: "Capital of fire & ice", estCost: 8000 },
+          { name: "Akureyri", desc: "Capital of the North", estCost: 7500 },
+          { name: "Vik", desc: "Black sand beaches", estCost: 7000 }
+        ],
+        food: [
+          { name: "Skyr", desc: "Icelandic yogurt", price: 500 },
+          { name: "Lamb Soup", desc: "Hearty traditional soup", price: 1500 },
+          { name: "Rye Bread", desc: "Geothermally baked bread", price: 600 }
+        ],
+        hotels: [
+          { name: "The Retreat at Blue Lagoon", rating: "5.0 ⭐", price: 120000 },
+          { name: "Ion Adventure Hotel", rating: "4.8 ⭐", price: 60000 },
+          { name: "Hotel Rangá", rating: "4.7 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Thailand",
+        img: "img/countries/thailand.jpg",
+        cities: [
+          { name: "Bangkok", desc: "Vibrant street life", estCost: 3000 },
+          { name: "Chiang Mai", desc: "Temples & mountains", estCost: 2500 },
+          { name: "Phuket", desc: "Island paradise", estCost: 3500 }
+        ],
+        food: [
+          { name: "Pad Thai", desc: "Stir-fried noodles", price: 300 },
+          { name: "Tom Yum Goong", desc: "Spicy shrimp soup", price: 400 },
+          { name: "Mango Sticky Rice", desc: "Sweet dessert", price: 200 }
+        ],
+        hotels: [
+          { name: "Mandarin Oriental", rating: "5.0 ⭐", price: 40000 },
+          { name: "Four Seasons Chiang Mai", rating: "4.9 ⭐", price: 35000 },
+          { name: "Trisara Phuket", rating: "4.9 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Switzerland",
+        img: "img/countries/switzerland.jpg",
+        cities: [
+          { name: "Zurich", desc: "Banking & lifestyle", estCost: 9000 },
+          { name: "Geneva", desc: "Global diplomacy hub", estCost: 9500 },
+          { name: "Zermatt", desc: "Home of the Matterhorn", estCost: 10000 }
+        ],
+        food: [
+          { name: "Fondue", desc: "Melted cheese pot", price: 3000 },
+          { name: "Raclette", desc: "Scraped melted cheese", price: 2500 },
+          { name: "Swiss Chocolate", desc: "World famous treat", price: 1000 }
+        ],
+        hotels: [
+          { name: "Badrutt's Palace", rating: "5.0 ⭐", price: 150000 },
+          { name: "The Dolder Grand", rating: "4.9 ⭐", price: 110000 },
+          { name: "Riffelalp Resort", rating: "4.8 ⭐", price: 90000 }
+        ]
+      },
+      {
+        name: "Brazil",
+        img: "img/countries/brazil.jpg",
+        cities: [
+          { name: "Rio de Janeiro", desc: "Carnival & beaches", estCost: 4000 },
+          { name: "Sao Paulo", desc: "Cultural metropolis", estCost: 3500 },
+          { name: "Salvador", desc: "Afro-Brazilian culture", estCost: 3000 }
+        ],
+        food: [
+          { name: "Feijoada", desc: "Black bean stew", price: 800 },
+          { name: "Pão de Queijo", desc: "Cheese bread", price: 300 },
+          { name: "Brigadeiro", desc: "Chocolate truffle", price: 100 }
+        ],
+        hotels: [
+          { name: "Copacabana Palace", rating: "4.9 ⭐", price: 45000 },
+          { name: "Hotel Fasano", rating: "4.8 ⭐", price: 40000 },
+          { name: "Fera Palace", rating: "4.7 ⭐", price: 25000 }
+        ]
+      },
+      {
+        name: "Egypt",
+        img: "img/countries/egypt.jpg",
+        cities: [
+          { name: "Cairo", desc: "Pyramids & history", estCost: 2500 },
+          { name: "Luxor", desc: "Open-air museum", estCost: 2000 },
+          { name: "Sharm El Sheikh", desc: "Red Sea resort", estCost: 3000 }
+        ],
+        food: [
+          { name: "Koshary", desc: "Lentils, rice & pasta", price: 300 },
+          { name: "Ful Medames", desc: "Fava bean stew", price: 200 },
+          { name: "Shawarma", desc: "Grilled meat wrap", price: 250 }
+        ],
+        hotels: [
+          { name: "Marriott Mena House", rating: "4.9 ⭐", price: 20000 },
+          { name: "Sofitel Winter Palace", rating: "4.8 ⭐", price: 15000 },
+          { name: "Rixos Sharm", rating: "4.8 ⭐", price: 18000 }
+        ]
+      },
+      {
+        name: "Canada",
+        img: "img/countries/canada.jpg",
+        cities: [
+          { name: "Toronto", desc: "CN Tower & diversity", estCost: 6000 },
+          { name: "Vancouver", desc: "Ocean & mountains", estCost: 6500 },
+          { name: "Montreal", desc: "French heritage", estCost: 5500 }
+        ],
+        food: [
+          { name: "Poutine", desc: "Fries, cheese & gravy", price: 800 },
+          { name: "Maple Syrup", desc: "Liquid gold", price: 1500 },
+          { name: "Nanaimo Bar", desc: "No-bake dessert", price: 400 }
+        ],
+        hotels: [
+          { name: "Fairmont Banff Springs", rating: "5.0 ⭐", price: 70000 },
+          { name: "The Ritz-Carlton Toronto", rating: "4.9 ⭐", price: 80000 },
+          { name: "Fairmont Le Château Frontenac", rating: "4.9 ⭐", price: 65000 }
+        ]
+      },
+      {
+        name: "New Zealand",
+        img: "img/countries/new zeland.jpg",
+        cities: [
+          { name: "Auckland", desc: "City of Sails", estCost: 6000 },
+          { name: "Queenstown", desc: "Adventure capital", estCost: 7000 },
+          { name: "Wellington", desc: "Coolest little capital", estCost: 5500 }
+        ],
+        food: [
+          { name: "Hangi", desc: "Maori earth oven feast", price: 2500 },
+          { name: "Pavlova", desc: "Meringue dessert", price: 600 },
+          { name: "Fish and Chips", desc: "Fresh catch", price: 1200 }
+        ],
+        hotels: [
+          { name: "Huka Lodge", rating: "5.0 ⭐", price: 150000 },
+          { name: "Eichardt's Private Hotel", rating: "4.9 ⭐", price: 90000 },
+          { name: "The Farm at Cape Kidnappers", rating: "5.0 ⭐", price: 130000 }
+        ]
+      },
+      {
+        name: "Spain",
+        img: "img/countries/spain.jpg",
+        cities: [
+          { name: "Barcelona", desc: "Gaudi architecture", estCost: 5000 },
+          { name: "Madrid", desc: "Royal palaces & art", estCost: 4500 },
+          { name: "Seville", desc: "Flamenco & tapas", estCost: 4000 }
+        ],
+        food: [
+          { name: "Paella", desc: "Rice & seafood dish", price: 1800 },
+          { name: "Tapas", desc: "Small savory dishes", price: 800 },
+          { name: "Churros", desc: "Fried dough with chocolate", price: 500 }
+        ],
+        hotels: [
+          { name: "Hotel Arts Barcelona", rating: "4.9 ⭐", price: 65000 },
+          { name: "Mandarin Oriental Madrid", rating: "4.9 ⭐", price: 70000 },
+          { name: "Alfonso XIII", rating: "4.8 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "China",
+        img: "img/countries/china.jpg",
+        cities: [
+          { name: "Beijing", desc: "Great Wall & Forbidden City", estCost: 4000 },
+          { name: "Shanghai", desc: "Modern skyline", estCost: 4500 },
+          { name: "Xi'an", desc: "Terracotta Warriors", estCost: 3500 }
+        ],
+        food: [
+          { name: "Peking Duck", desc: "Crispy duck skin", price: 2500 },
+          { name: "Dim Sum", desc: "Steamed dumplings", price: 1200 },
+          { name: "Hot Pot", desc: "Spicy broth cooking", price: 1500 }
+        ],
+        hotels: [
+          { name: "The Peninsula Beijing", rating: "4.9 ⭐", price: 50000 },
+          { name: "Waldorf Astoria Shanghai", rating: "4.9 ⭐", price: 55000 },
+          { name: "Sofitel Legend Xi'an", rating: "4.8 ⭐", price: 35000 }
+        ]
+      },
+      {
+        name: "Turkey",
+        img: "img/countries/turkey.jpg",
+        cities: [
+          { name: "Istanbul", desc: "Where East meets West", estCost: 3000 },
+          { name: "Cappadocia", desc: "Hot air balloons", estCost: 4000 },
+          { name: "Antalya", desc: "Turquoise coast", estCost: 2500 }
+        ],
+        food: [
+          { name: "Kebab", desc: "Grilled meat", price: 500 },
+          { name: "Baklava", desc: "Sweet pastry", price: 300 },
+          { name: "Turkish Delight", desc: "Sweet confection", price: 200 }
+        ],
+        hotels: [
+          { name: "Ciragan Palace Kempinski", rating: "5.0 ⭐", price: 60000 },
+          { name: "Museum Hotel", rating: "4.9 ⭐", price: 40000 },
+          { name: "Rixos Premium Belek", rating: "4.8 ⭐", price: 35000 }
+        ]
+      },
+      {
+        name: "UAE",
+        img: "img/countries/uae.jpg",
+        cities: [
+          { name: "Dubai", desc: "Luxury & skyscrapers", estCost: 8000 },
+          { name: "Abu Dhabi", desc: "Culture & capital", estCost: 7000 },
+          { name: "Sharjah", desc: "Art & heritage", estCost: 5000 }
+        ],
+        food: [
+          { name: "Machboos", desc: "Spiced rice & meat", price: 1200 },
+          { name: "Luqaimat", desc: "Sweet dumplings", price: 400 },
+          { name: "Shawarma", desc: "Street food staple", price: 300 }
+        ],
+        hotels: [
+          { name: "Burj Al Arab", rating: "7.0 ⭐", price: 250000 },
+          { name: "Emirates Palace", rating: "5.0 ⭐", price: 150000 },
+          { name: "Atlantis The Palm", rating: "4.9 ⭐", price: 90000 }
+        ]
+      },
+      {
+        name: "Singapore",
+        img: "img/countries/singapore.jpg",
+        cities: [
+          { name: "Marina Bay", desc: "Iconic skyline", estCost: 7000 },
+          { name: "Sentosa", desc: "Island resort", estCost: 8000 },
+          { name: "Chinatown", desc: "Heritage district", estCost: 5000 }
+        ],
+        food: [
+          { name: "Chili Crab", desc: "Spicy seafood dish", price: 3000 },
+          { name: "Hainanese Chicken Rice", desc: "National dish", price: 600 },
+          { name: "Laksa", desc: "Spicy noodle soup", price: 500 }
+        ],
+        hotels: [
+          { name: "Marina Bay Sands", rating: "4.9 ⭐", price: 95000 },
+          { name: "Raffles Hotel", rating: "5.0 ⭐", price: 100000 },
+          { name: "Capella Singapore", rating: "4.9 ⭐", price: 90000 }
+        ]
+      },
+      {
+        name: "Malaysia",
+        img: "img/countries/malaysia.jpg",
+        cities: [
+          { name: "Kuala Lumpur", desc: "Petronas Towers", estCost: 3000 },
+          { name: "Penang", desc: "Food paradise", estCost: 2500 },
+          { name: "Langkawi", desc: "Tropical islands", estCost: 3500 }
+        ],
+        food: [
+          { name: "Nasi Lemak", desc: "Coconut rice dish", price: 300 },
+          { name: "Satay", desc: "Grilled meat skewers", price: 400 },
+          { name: "Laksa", desc: "Spicy noodle soup", price: 350 }
+        ],
+        hotels: [
+          { name: "Mandarin Oriental KL", rating: "4.9 ⭐", price: 25000 },
+          { name: "Eastern & Oriental", rating: "4.8 ⭐", price: 20000 },
+          { name: "The Datai Langkawi", rating: "5.0 ⭐", price: 40000 }
+        ]
+      },
+      {
+        name: "Indonesia",
+        img: "img/countries/indonesia.jpg",
+        cities: [
+          { name: "Bali", desc: "Island of Gods", estCost: 3000 },
+          { name: "Jakarta", desc: "Dynamic capital", estCost: 2500 },
+          { name: "Yogyakarta", desc: "Cultural soul", estCost: 2000 }
+        ],
+        food: [
+          { name: "Nasi Goreng", desc: "Fried rice", price: 250 },
+          { name: "Satay", desc: "Grilled skewers", price: 300 },
+          { name: "Rendang", desc: "Spicy meat dish", price: 400 }
+        ],
+        hotels: [
+          { name: "Ayana Resort", rating: "4.9 ⭐", price: 35000 },
+          { name: "Hotel Mulia", rating: "4.8 ⭐", price: 30000 },
+          { name: "Amanjiwo", rating: "5.0 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "South Korea",
+        img: "img/countries/southkorea.jpg",
+        cities: [
+          { name: "Seoul", desc: "K-Pop & palaces", estCost: 5000 },
+          { name: "Busan", desc: "Beaches & seafood", estCost: 4500 },
+          { name: "Jeju Island", desc: "Volcanic island", estCost: 4000 }
+        ],
+        food: [
+          { name: "Kimchi", desc: "Fermented vegetables", price: 200 },
+          { name: "Bibimbap", desc: "Mixed rice bowl", price: 800 },
+          { name: "Bulgogi", desc: "Marinated beef", price: 1500 }
+        ],
+        hotels: [
+          { name: "The Shilla Seoul", rating: "4.9 ⭐", price: 55000 },
+          { name: "Signiel Busan", rating: "4.8 ⭐", price: 50000 },
+          { name: "Lotte Hotel Jeju", rating: "4.7 ⭐", price: 40000 }
+        ]
+      },
+      {
+        name: "Germany",
+        img: "img/countries/germany.jpg",
+        cities: [
+          { name: "Berlin", desc: "History & nightlife", estCost: 6000 },
+          { name: "Munich", desc: "Oktoberfest home", estCost: 6500 },
+          { name: "Hamburg", desc: "Port city", estCost: 5500 }
+        ],
+        food: [
+          { name: "Bratwurst", desc: "German sausage", price: 500 },
+          { name: "Pretzel", desc: "Salty bread knot", price: 200 },
+          { name: "Schnitzel", desc: "Breaded cutlet", price: 1200 }
+        ],
+        hotels: [
+          { name: "Hotel Adlon Kempinski", rating: "4.9 ⭐", price: 75000 },
+          { name: "Bayerischer Hof", rating: "4.8 ⭐", price: 65000 },
+          { name: "The Fontenay", rating: "4.9 ⭐", price: 70000 }
+        ]
+      },
+      {
+        name: "Netherlands",
+        img: "img/countries/netherlands.jpg",
+        cities: [
+          { name: "Amsterdam", desc: "Canals & museums", estCost: 6500 },
+          { name: "Rotterdam", desc: "Modern architecture", estCost: 6000 },
+          { name: "Utrecht", desc: "Medieval center", estCost: 5500 }
+        ],
+        food: [
+          { name: "Stroopwafel", desc: "Syrup waffle", price: 200 },
+          { name: "Bitterballen", desc: "Fried meat snacks", price: 400 },
+          { name: "Herring", desc: "Raw fish delicacy", price: 500 }
+        ],
+        hotels: [
+          { name: "Waldorf Astoria Amsterdam", rating: "4.9 ⭐", price: 85000 },
+          { name: "Hotel New York", rating: "4.7 ⭐", price: 45000 },
+          { name: "Grand Hotel Karel V", rating: "4.6 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Portugal",
+        img: "img/countries/portugal.jpg",
+        cities: [
+          { name: "Lisbon", desc: "Hills & trams", estCost: 4500 },
+          { name: "Porto", desc: "Wine & river", estCost: 4000 },
+          { name: "Algarve", desc: "Beaches & cliffs", estCost: 5000 }
+        ],
+        food: [
+          { name: "Pastel de Nata", desc: "Custard tart", price: 150 },
+          { name: "Bacalhau", desc: "Salted cod", price: 1200 },
+          { name: "Francesinha", desc: "Hearty sandwich", price: 1000 }
+        ],
+        hotels: [
+          { name: "Four Seasons Ritz", rating: "4.9 ⭐", price: 60000 },
+          { name: "The Yeatman", rating: "4.9 ⭐", price: 55000 },
+          { name: "Vila Vita Parc", rating: "4.8 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Mexico",
+        img: "img/countries/mexico.jpg",
+        cities: [
+          { name: "Mexico City", desc: "Culture & history", estCost: 3000 },
+          { name: "Cancun", desc: "Caribbean beaches", estCost: 4000 },
+          { name: "Oaxaca", desc: "Culinary capital", estCost: 2500 }
+        ],
+        food: [
+          { name: "Tacos", desc: "Street food king", price: 100 },
+          { name: "Mole", desc: "Complex sauce", price: 800 },
+          { name: "Guacamole", desc: "Avocado dip", price: 150 }
+        ],
+        hotels: [
+          { name: "Gran Hotel Ciudad de Mexico", rating: "4.8 ⭐", price: 20000 },
+          { name: "Nizuc Resort", rating: "4.9 ⭐", price: 45000 },
+          { name: "Quinta Real Oaxaca", rating: "4.8 ⭐", price: 15000 }
+        ]
+      },
+      {
+        name: "USA",
+        img: "img/countries/usa.jpg",
+        cities: [
+          { name: "New York", desc: "The Big Apple", estCost: 10000 },
+          { name: "Los Angeles", desc: "Hollywood & beaches", estCost: 9000 },
+          { name: "Las Vegas", desc: "Entertainment capital", estCost: 8500 }
+        ],
+        food: [
+          { name: "Burger", desc: "American classic", price: 1200 },
+          { name: "BBQ Ribs", desc: "Smoky meat", price: 2000 },
+          { name: "Apple Pie", desc: "Sweet dessert", price: 600 }
+        ],
+        hotels: [
+          { name: "The Plaza", rating: "4.9 ⭐", price: 120000 },
+          { name: "Beverly Hills Hotel", rating: "4.9 ⭐", price: 100000 },
+          { name: "Bellagio", rating: "4.8 ⭐", price: 80000 }
+        ],
+      },
+      {
+        name: "South Africa",
+        img: "img/countries/southafrica.jpg",
+        cities: [
+          { name: "Cape Town", desc: "Table Mountain", estCost: 4000 },
+          { name: "Johannesburg", desc: "City of Gold", estCost: 3500 },
+          { name: "Durban", desc: "Beaches & curry", estCost: 3000 }
+        ],
+        food: [
+          { name: "Biltong", desc: "Dried meat snack", price: 400 },
+          { name: "Bobotie", desc: "Spiced meat bake", price: 800 },
+          { name: "Braai", desc: "BBQ feast", price: 1200 }
+        ],
+        hotels: [
+          { name: "The Silo Hotel", rating: "5.0 ⭐", price: 70000 },
+          { name: "Saxon Hotel", rating: "4.9 ⭐", price: 50000 },
+          { name: "The Oyster Box", rating: "4.9 ⭐", price: 45000 }
+        ]
+      },
+      {
+        name: "Argentina",
+        img: "img/countries/argentina.jpg",
+        cities: [
+          { name: "Buenos Aires", desc: "Paris of South America", estCost: 3500 },
+          { name: "Mendoza", desc: "Wine country", estCost: 4000 },
+          { name: "Bariloche", desc: "Patagonian lakes", estCost: 3800 }
+        ],
+        food: [
+          { name: "Asado", desc: "BBQ feast", price: 1500 },
+          { name: "Empanadas", desc: "Savory pastries", price: 200 },
+          { name: "Dulce de Leche", desc: "Sweet caramel", price: 300 }
+        ],
+        hotels: [
+          { name: "Alvear Palace", rating: "4.9 ⭐", price: 40000 },
+          { name: "Cavas Wine Lodge", rating: "5.0 ⭐", price: 50000 },
+          { name: "Llao Llao Resort", rating: "4.8 ⭐", price: 45000 }
+        ]
+      },
+      {
+        name: "Vietnam",
+        img: "img/countries/vietnam.jpg",
+        cities: [
+          { name: "Hanoi", desc: "Historic capital", estCost: 2000 },
+          { name: "Ho Chi Minh City", desc: "Bustling metropolis", estCost: 2500 },
+          { name: "Hoi An", desc: "Ancient lantern city", estCost: 1800 }
+        ],
+        food: [
+          { name: "Pho", desc: "Noodle soup", price: 200 },
+          { name: "Banh Mi", desc: "Baguette sandwich", price: 150 },
+          { name: "Spring Rolls", desc: "Fresh or fried", price: 100 }
+        ],
+        hotels: [
+          { name: "Sofitel Legend Metropole", rating: "4.9 ⭐", price: 25000 },
+          { name: "The Reverie Saigon", rating: "4.9 ⭐", price: 28000 },
+          { name: "Four Seasons Nam Hai", rating: "5.0 ⭐", price: 45000 }
+        ]
+      },
+      {
+        name: "Norway",
+        img: "img/countries/norway.jpg",
+        cities: [
+          { name: "Oslo", desc: "Modern capital", estCost: 7500 },
+          { name: "Bergen", desc: "Gateway to fjords", estCost: 7000 },
+          { name: "Tromso", desc: "Northern lights", estCost: 6500 }
+        ],
+        food: [
+          { name: "Salmon", desc: "Fresh Atlantic fish", price: 2000 },
+          { name: "Brunost", desc: "Brown cheese", price: 500 },
+          { name: "Lefse", desc: "Soft flatbread", price: 300 }
+        ],
+        hotels: [
+          { name: "The Thief", rating: "4.8 ⭐", price: 65000 },
+          { name: "Hotel Norge", rating: "4.7 ⭐", price: 55000 },
+          { name: "Clarion The Edge", rating: "4.6 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Sweden",
+        img: "img/countries/sweden.jpg",
+        cities: [
+          { name: "Stockholm", desc: "Archipelago city", estCost: 7000 },
+          { name: "Gothenburg", desc: "Coastal charm", estCost: 6500 },
+          { name: "Malmo", desc: "Modern & historic", estCost: 6000 }
+        ],
+        food: [
+          { name: "Meatballs", desc: "Classic dish", price: 1200 },
+          { name: "Cinnamon Bun", desc: "Fika favorite", price: 300 },
+          { name: "Gravlax", desc: "Cured salmon", price: 800 }
+        ],
+        hotels: [
+          { name: "Grand Hôtel", rating: "4.9 ⭐", price: 70000 },
+          { name: "Upper House", rating: "4.8 ⭐", price: 60000 },
+          { name: "MJ's", rating: "4.6 ⭐", price: 50000 }
+        ]
+      },
+      {
+        name: "Finland",
+        img: "img/countries/finland.jpg",
+        cities: [
+          { name: "Helsinki", desc: "Design capital", estCost: 7000 },
+          { name: "Rovaniemi", desc: "Santa's home", estCost: 7500 },
+          { name: "Turku", desc: "Oldest city", estCost: 6000 }
+        ],
+        food: [
+          { name: "Karjalanpiirakka", desc: "Rice pie", price: 200 },
+          { name: "Reindeer Stew", desc: "Lapland delicacy", price: 1500 },
+          { name: "Salmiakki", desc: "Salty licorice", price: 100 }
+        ],
+        hotels: [
+          { name: "Hotel Kamp", rating: "4.9 ⭐", price: 65000 },
+          { name: "Arctic TreeHouse", rating: "4.8 ⭐", price: 80000 },
+          { name: "Kakslauttanen", rating: "4.7 ⭐", price: 50000 }
+        ]
+      }
+    ];
+
+    function getRandomCountries(count) {
+      const shuffled = [...countries].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function handleSearchKeyPress(event) {
+      if (event.key === 'Enter') {
+        searchDestinations();
+      }
+    }
+
+    function searchDestinations() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      if (!query) {
+        return;
+      }
+
+      const country = countries.find(c => c.name.toLowerCase().includes(query));
+
+      if (country) {
+        openTripDetailsModal(country.name);
+      } else {
+        alert("Destination not found. Please try another one.");
+      }
+    }
+
+    function loadDestinations() {
+      const grid = document.getElementById("countryGrid");
+      grid.innerHTML = "";
+
+      const randomCountries = getRandomCountries(12);
+
+      randomCountries.forEach(country => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.onclick = () => openTripDetailsModal(country.name);
+        card.innerHTML = `
+    <img src="${country.img}" loading="lazy">
+    <div class="card-info">
+      <div class="card-title">${country.name}</div>
+      <div class="card-desc">Explore the beauty of ${country.name}.</div>
+    </div>
+  `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openCountryDetails(countryName, tripDetails = null) {
+      const country = countries.find(c => c.name === countryName);
+      if (!country) return;
+
+      const cities = country.cities || [
+        { name: "Capital City", desc: "The heart of the nation" },
+        { name: "Coastal Town", desc: "Relax by the sea" },
+        { name: "Historic Village", desc: "Step back in time" }
+      ];
+
+      const food = country.food || [
+        { name: "Local Delicacy", desc: "Traditional flavors" },
+        { name: "Street Food", desc: "Popular local snack" },
+        { name: "Sweet Treat", desc: "Delicious dessert" }
+      ];
+
+      let hotels = country.hotels || [
+        { name: "Luxury Resort", rating: "5.0 ⭐" },
+        { name: "Boutique Hotel", rating: "4.8 ⭐" },
+        { name: "Cozy Stay", rating: "4.7 ⭐" }
+      ];
+
+      const content = document.getElementById("detailsContent");
+
+      let tripSummaryHTML = "";
+
+      if (tripDetails) {
+        // Budget Calculation Logic
+        const { persons, budget, nights } = tripDetails;
+
+        // 1. Accommodation: Assume 1 room per 2 persons
+        const roomsNeeded = Math.ceil(persons / 2);
+
+        // Filter hotels within budget (Price per room * rooms * nights <= Budget * 0.5 (allocate 50% for hotel))
+        // Or just show all and highlight affordable ones
+
+        const affordableHotels = hotels.map(h => {
+          const totalHotelCost = h.price * roomsNeeded * nights;
+          const isAffordable = totalHotelCost <= (budget * 0.6); // 60% max for hotel
+          return { ...h, totalCost: totalHotelCost, isAffordable };
+        });
+
+        // 2. Food: Avg cost per person per day * persons * nights
+        const avgFoodPrice = food.reduce((sum, f) => sum + (f.price || 0), 0) / (food.length || 1);
+        const totalFoodCost = avgFoodPrice * 3 * persons * nights; // 3 meals a day
+
+        // 3. Activities: Avg city cost * persons * nights
+        const avgActivityCost = cities.reduce((sum, c) => sum + (c.estCost || 0), 0) / (cities.length || 1);
+        const totalActivityCost = avgActivityCost * persons * nights;
+
+        const estTotalTripCost = affordableHotels[0]
+          ? (affordableHotels[0].totalCost + totalFoodCost + totalActivityCost)
+          : (hotels[0].price * roomsNeeded * nights + totalFoodCost + totalActivityCost);
+
+        const statusColor = estTotalTripCost <= budget ? "#4ade80" : "#ef4444";
+        const statusText = estTotalTripCost <= budget ? "Within Budget" : "Over Budget";
+
+        tripSummaryHTML = `
+          <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:30px; border:1px solid ${statusColor}">
+            <h3 style="color:var(--accent); margin-bottom:15px; border:none;">Trip Summary</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:15px; margin-bottom:20px;">
+              <div><strong>Persons:</strong> ${persons}</div>
+              <div><strong>Nights:</strong> ${nights}</div>
+              <div><strong>Budget:</strong> ₹${budget}</div>
+              <div><strong>Est. Cost:</strong> <span style="color:${statusColor}">₹${estTotalTripCost.toFixed(0)}</span></div>
+            </div>
+             <div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:10px;">
+                <h4 style="margin-bottom:10px; color:#94a3b8;">Expense Breakdown (Approx)</h4>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                   <span>Accommodation (${roomsNeeded} rooms):</span>
+                   <span>₹${affordableHotels[0]?.totalCost?.toFixed(0) || "N/A"}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                   <span>Food (${persons} ppl):</span>
+                   <span>₹${totalFoodCost.toFixed(0)}</span>
+                </div>
+                 <div style="display:flex; justify-content:space-between;">
+                   <span>Activities/Travel:</span>
+                   <span>₹${totalActivityCost.toFixed(0)}</span>
+                </div>
+            </div>
+            <div style="margin-top:15px; text-align:right; color:${statusColor}; font-weight:bold;">
+              ${statusText}
+            </div>
+          </div>
+          `;
+
+        // Re-map hotels to show specific costs
+        hotels = affordableHotels.map(h => ({
+          ...h,
+          desc: `Total: ₹${h.totalCost} ${h.isAffordable ? '✅' : '❌'}`
+        }));
+      }
+
+      content.innerHTML = `
+    <div class="details-header">
+      <img src="${country.img}" alt="${country.name}">
+      <div>
+        <h2 style="margin-bottom:5px; text-align:left;">${country.name}</h2>
+        <p style="color:var(--text-muted);">Discover the best of ${country.name}</p>
+      </div>
+    </div>
+
+    ${tripSummaryHTML}
+
+    <div class="details-section">
+      <h3>🏙️ Top 3 Cities</h3>
+      <div class="details-grid">
+        ${cities.map(item => `
+          <div class="detail-card">
+            <div class="detail-info">
+              <div class="detail-name">${item.name}</div>
+              <div class="detail-sub">${item.desc}</div>
+              <div class="detail-sub" style="color:var(--accent); margin-top:5px;">Est. Activity: ₹${item.estCost || 'N/A'}/day</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="details-section">
+      <h3>🍜 Must Try Food</h3>
+      <div class="details-grid">
+        ${food.map(item => `
+          <div class="detail-card">
+            <div class="detail-info">
+              <div class="detail-name">${item.name}</div>
+              <div class="detail-sub">${item.desc}</div>
+               <div class="detail-sub" style="color:var(--accent); margin-top:5px;">Approx: ₹${item.price || 'N/A'}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="details-section">
+      <h3>🏨 Best Hotels</h3>
+      <div class="details-grid">
+        ${hotels.map(item => `
+          <div class="detail-card">
+            <div class="detail-info">
+              <div class="detail-name">${item.name}</div>
+              <div class="detail-sub">${item.rating}</div>
+              <div class="detail-sub" style="color:var(--accent); margin-top:5px;">
+                 Price: ₹${item.price}/night <br>
+                ${item.desc || ''}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+        `;
+
+      document.getElementById("detailsModal").style.display = "flex";
+    }
+
+    function closeDetails() {
+      document.getElementById("detailsModal").style.display = "none";
+    }
+
+    // Check login on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (token && user) {
+        document.getElementById("loginBtn").style.display = "none";
+        document.getElementById("userEmail").innerText = user.username || user.email;
+        document.getElementById("userEmail").style.display = "inline-block";
+        document.getElementById("logoutBtn").style.display = "inline-block";
+      }
+    });
+
+    window.onload = loadDestinations;
+
+    function openSignup() {
+      document.getElementById("loginModal").style.display = "none";
+      document.getElementById("signupModal").style.display = "flex";
+    }
+
+    function openLogin() {
+      document.getElementById("signupModal").style.display = "none";
+      document.getElementById("loginModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
+    function closeSignup() {
+      document.getElementById("signupModal").style.display = "none";
+    }
+
+    async function signup() {
+      const username = document.getElementById("signupUsername").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      if (!username || !email || !password) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // 🟢 SIGNUP SUCCESS – NOW AUTO LOGIN
+          const loginRes = await fetch('http://localhost:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+
+          const loginData = await loginRes.json();
+
+          if (loginRes.ok) {
+            // Save token + user
+            localStorage.setItem("token", loginData.token);
+            localStorage.setItem("user", JSON.stringify(loginData.user));
+
+            alert("Signup Successful! Logged in automatically.");
+            closeModal();
+
+            // Update UI after login
+            document.getElementById("loginBtn").style.display = "none";
+            document.getElementById("userEmail").innerText = loginData.user.username;
+            document.getElementById("userEmail").style.display = "inline-block";
+            document.getElementById("logoutBtn").style.display = "inline-block";
+
+          } else {
+            alert("Auto login failed. Please login manually.");
+            openLogin();
+          }
+
+        } else {
+          alert(data.error || "Signup failed");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error connecting to server");
+      }
+    }
+
+    async function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      if (!email || !password) {
+        alert("Please enter email and password!");
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
+          alert("Login Successful!");
+          closeModal();
+
+          document.getElementById("loginBtn").style.display = "none";
+          document.getElementById("userEmail").innerText = data.user.username;
+          document.getElementById("userEmail").style.display = "inline-block";
+          document.getElementById("logoutBtn").style.display = "inline-block";
+        } else {
+          alert(data.msg || "Login failed");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error connecting to server");
+      }
+    }
+
+
+    function openModal() {
+      document.getElementById("loginModal").style.display = "flex";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      document.getElementById("userEmail").style.display = "none";
+      document.getElementById("logoutBtn").style.display = "none";
+      document.getElementById("loginBtn").style.display = "inline-block";
+
+      alert("Logged out successfully!");
+    }
+
+    function calculateExpenses() {
+      const flight = parseFloat(document.getElementById('flightCost').value) || 0;
+      const hotel = parseFloat(document.getElementById('hotelCost').value) || 0;
+      const food = parseFloat(document.getElementById('foodCost').value) || 0;
+      const transport = parseFloat(document.getElementById('transportCost').value) || 0;
+
+      const total = flight + hotel + food + transport;
+
+      const output = document.getElementById('totalOutput');
+      output.style.display = 'block';
+      output.innerHTML = `Total Estimated Cost: <span style="color:var(--accent)">₹${total.toFixed(2)}</span>`;
+    }
+
+    // --- New Trip Details Logic ---
+    let selectedCountryName = "";
+
+    function openTripDetailsModal(countryName) {
+      selectedCountryName = countryName;
+      document.getElementById("tripDetailsModal").style.display = "flex";
+    }
+
+    function closeTripDetailsModal() {
+      document.getElementById("tripDetailsModal").style.display = "none";
+    }
+
+    function submitTripDetails() {
+      const persons = parseInt(document.getElementById("tripPersons").value) || 0;
+      const budget = parseFloat(document.getElementById("tripBudget").value) || 0;
+      const nights = parseInt(document.getElementById("tripNights").value) || 0;
+      const startDate = document.getElementById("tripStartDate").value;
+      const endDate = document.getElementById("tripEndDate").value;
+
+      if (persons <= 0 || budget <= 0 || nights <= 0 || !startDate || !endDate) {
+        alert("Please fill in all trip details correctly!");
+        return;
+      }
+
+      const tripDetails = { persons, budget, nights, startDate, endDate };
+      closeTripDetailsModal();
+      openCountryDetails(selectedCountryName, tripDetails);
+    }
+
+  </script>
+</body>
+
+</html>
